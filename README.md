@@ -4,7 +4,7 @@ In this lab you will learn how to use general purpose logic satisfaction tools t
 
 ## Part 0: Setup and Installation
 
-For this lab you will be using the (Z3 SMT Solver)[https://github.com/Z3Prover/z3] (and its python bindings `z3-solver`). You will need to install Z3 using pip: `pip install z3-solver`  or through another python package manager such as conda or [uv](https://docs.astral.sh/uv/). Additionally, the rendering for the lab uses `pyglet` which was bundled with the last lab. You can reuse the pyglet python source from lab 1 or install it alongside `z3` with `pip install pyglet`. If you are using uv for python package management this repo also contains the pyproject.toml to quickly sync and run the code.  
+For this lab you will be using the [Z3 SMT Solver](https://github.com/Z3Prover/z3) (and its python bindings `z3-solver`). You will need to install Z3 using pip: `pip install z3-solver`  or through another python package manager such as conda or [uv](https://docs.astral.sh/uv/). Additionally, the rendering for the lab uses `pyglet` which was bundled with the last lab. You can reuse the pyglet python source from lab 1 or install it alongside `z3` with `pip install pyglet`. If you are using uv for python package management this repo also contains the pyproject.toml to quickly sync and run the code.  
 
 ## Part 1: Simple Solvers
 
