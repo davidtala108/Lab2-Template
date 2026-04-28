@@ -23,7 +23,7 @@ In an empty dungeon your wizard finds two different kinds of stones, Fire Stones
 
 When after entering a cell with a Fire Stone, instead of getting a good tri-tip sandwich as you would expect, you must make a 90 degree turn from the direction you entered into the cell (i.e. you cannot travel in a continuous straight line through a fire stone cell). However your path must maintain a straight path (i.e. no turns) through both the previous cell visited before the fire stone, and the next cell after the fire stone. 
 
-When after entering a cell with an Ice Stone, you must travel straight through in the direction you entered into the cell (i.e. you cannot turn). However your path must make a 90 degree turn in either the previous cell visited before the fire stone, or the next cell after the fire stone. 
+When after entering a cell with an Ice Stone, you must travel straight through in the direction you entered into the cell (i.e. you cannot turn). However your path must make a 90 degree turn in either the previous cell visited before the ice stone, or the next cell after the ice stone. 
 
 You may note that this is very similar to the puzzle game [Masyu](https://en.wikipedia.org/wiki/Masyu). 
 
