@@ -60,14 +60,13 @@ def boolean_expressions():
     The output unsat means unsatisfiable. The solver is telling us that there is no possible choice of a, b, c that makes the current constraints true.
     """
 
-
-boolean_expressions()
 #new comment 
 
 """
 Z3 can find solutions to more than just SAT problems – it is an SMT solver.
 
-SMT stands for SAT modulo theories; it generalizes SAT to formulas involving integers, strings, arrays, and so on (the details of how it can do this are interesting but complicated, and we probably wont be able to get to them in class). For example, we can use Z3 to find a solution for the system of equations 3x - 2y = 1, y - x = 1.
+SMT stands for SAT modulo theories; it generalizes SAT to formulas involving integers, strings, arrays, and so on (the details of how it can do this are interesting but complicated, 
+and we probably wont be able to get to them in class). For example, we can use Z3 to find a solution for the system of equations 3x - 2y = 1, y - x = 1.
 """
 def integer_expressions():
     x,y = Ints('x y')
@@ -79,9 +78,10 @@ def integer_expressions():
         case z3.sat:
             model = s.model()
             print(model)
-
 """
-In addition to integers Z3 can solve systems of equations that use real numbers. These can get quite complex and also very useful potentially for some of your final projects.
+
+In addition to integers Z3 can solve systems of equations that use real numbers.
+These can get quite complex and also very useful potentially for some of your final projects.
 """
 
 def real_artithmetic():
@@ -97,8 +97,10 @@ def real_artithmetic():
         case z3.unsat:
             print ("UNSAT")
 
+
 """
-One of the most prominent uses of SMT in industry (especially now when so much software is being produced with little else to ensure correctness) is in software verification. You can see how we can prove interesting properties about programs including relating logical properties with underlying representation properties.
+One of the most prominent uses of SMT in industry (especially now when so much software is being produced with little else to ensure correctness) is in software verification.
+ You can see how we can prove interesting properties about programs including relating logical properties with underlying representation properties.
 """
 def integer_overflow():
     # Note this takes a long time to process!
@@ -118,14 +120,30 @@ def integer_overflow():
 
 
 """
-Often, SMT solvers are not used to find a solution, but to prove that no solution exists. For instance, say that we want to prove the mathematical fact y > 0 ==> x + y > x. How might we do this using z3?
+Often, SMT solvers are not used to find a solution, but to prove that no solution exists. 
+For instance, say that we want to prove the mathematical fact y > 0 ==> x + y > x. How might we do this using z3?
 """
 def proof_by_unsat():
     # y>0 => x+y > x
     x,y = Ints('x y')
     s = Solver()
+    a = (y >0)
+    b = (x + y > x)
+   
 
-    # TODO: YOUR CODE HERE
+    clause_1 = Or(Not(a),Not(b))
+    clause_2 = Or(Not(a),b)
+    clause_3 = Or(a,b)
+
+    s.add(clause_1)
+    s.add(clause_2)
+    s.add(clause_3)
+
+    
+    match s.check():
+        case z3.sat:
+            model = s.model()
+            print(model)
 
     match s.check():
         case z3.unsat:
@@ -140,17 +158,25 @@ def demorgans_proof():
     demorgan = And(p, q) == Not(Or(Not(p), Not(q)))
 
     def prove(f):
-        """
-        Print "No counterexample can be found, therefore the statement is true" if the given formula f is true, otherwise print "The formula f is false, with counterexample given by: " and the model that shows the formula to be false.
-        """
-        # TODO: YOUR CODE HERE
-        pass
+
+            s = Solver()
+            s.add(Not(f))
+            match s.check():
+                case z3.sat:
+                    model = s.model()
+                    print(f"The formula f is false, with counterexample given by: {model} and the model that shows the formula to be false.") 
+
+            match s.check():
+                case z3.unsat:   
+                    print("No counterexample can be found, therefore the statement is true if the given formula f is true")
+        
 
     prove(demorgan)
 
 
 """
-Let us try to use z3 to solve a classic kind of puzzle. You will need to come up with an encoding of the relevant part of the puzzle into variables and constraints as well translate the output of the solver into a solution.
+Let us try to use z3 to solve a classic kind of puzzle. You will need to come up with an encoding of the relevant part of the puzzle into variables and constraints 
+as well translate the output of the solver into a solution.
 """
 def wedding_planning():
     """
@@ -175,8 +201,28 @@ def wedding_planning():
     or
         "There is no acceptable seating arraignment"
     """
-    #TODO: YOUR CODE HERE
+    Left = 0
+    Middle = 1
+    Right = 2
 
+    s = Solver()
+    Alice = Int('x')
+    Charlie = Int('y')
+    Bob = Int('z')
+
+    s.add(Or( Alice == Middle, Alice == Right ))
+    s.add(Or( Charlie == Alice - 2, Charlie == Alice + 2))
+    s.add(Charlie< Right + 1)
+    s.add(Bob < Charlie)
+    s.add(Bob > Left - 1 )
+
+    match s.check():
+        case z3.sat:
+            print (f"Model: {s.model()}")
+
+    match s.check():
+        case z3.unsat:
+            print ("UNSAT: There is no acceptable seating arraignment ")
 
 
 
@@ -202,7 +248,47 @@ def sudoku(puzzle):
     """
     Use print_sudoku to print your solution to puzzle or otherwise print "The puzzle is impossible.".
     """
-    #TODO: YOUR CODE HERE
+    s = Solver()
+
+    
+    X = [[Int(f"x_{i}_{j}") for j in range(9)] for i in range(9)]
+
+    for i in range(9):
+        s.add(Distinct(X[i]))
+        for j in range(9):
+            s.add(And(X[i][j]>0,X[i][j]<10))
+
+    #columne    
+    for k in range(9):
+        s.add(Distinct([X[l][k] for l in range(9)]))
+
+    for f in range(9):
+        for g in range(9):
+            if puzzle[f][g] != 0:
+                s.add(X[f][g]== puzzle[f][g])
+    
+    for o in range(0,9, 3):
+        s.add(Distinct([X[m][o] for m in range(o, o + 3)]+ [X[m][o+1] for m in range(o, o + 3)]+ [X[m][o+2] for m in range(o, o + 3)]))
+
+
+            
+
+
+       
+
+    
+    match s.check():
+        case z3.sat:
+            m = s.model()
+            grid = [[m.evaluate(X[i][j]).as_long() for j in range(9)] for i in range(9)]
+            print_sudoku(grid)
+        case z3.unsat:
+            print("The puzzle is impossible.")
+
+      
+              
+            
+
 
 
 
@@ -215,6 +301,7 @@ instance = ((0,0,0,0,9,4,0,3,0),
             (0,7,0,0,0,0,5,2,0),
             (9,0,0,0,6,5,0,0,0),
             (0,4,0,9,7,0,0,0,0))
+
 
 
 
@@ -238,4 +325,31 @@ def coin_sum(total):
 
     Hint: You may need to run many related but slightly different model checks.
     """
-    # TODO: YOUR CODE HERE
+    s = Solver()
+    
+
+    s.add(And(p>= 0, n>= 0, d>= 0, q>= 0, f>= 0, c>= 0))
+    s.add(p + n + d + q + f + c <= total)
+    s.add(p*1 + n*5 + d*10 + q*25 + f*50 + c*100 == 200)
+
+    count = 0
+    while True:
+        match s.check():
+            case z3.sat:
+                count += 1
+                m = s.model()
+                s.add(Or(
+                    [p != m[p],
+                     n!= m[n],
+                    d != m[d],
+                    q != m[q],
+                    f != m[f],
+                    c != m[c]]
+                ))
+        match s.check():
+            case z3.unsat:
+                print("The number of ways to make $2 with the given coins is:", count)
+                break
+
+coin_sum(5)
+
